@@ -34,9 +34,6 @@ class SignUpScreen extends StatelessWidget {
 class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-
-    
     return Scaffold(
       body: Center(
         child: Text('Welcome!', style: Theme.of(context).textTheme.headline2),
@@ -57,6 +54,25 @@ class _SignUpFormState extends State<SignUpForm> {
 
   double _formProgress = 0;
 
+  void _updateFormProgress() {
+    var progress = 0.0;
+    final controllers = [
+      _firstNameTextController,
+      _lastNameTextController,
+      _usernameTextController
+    ];
+
+    for (final controller in controllers) {
+      if (controller.value.text.isNotEmpty) {
+        progress += 1 / controllers.length;
+      }
+    }
+
+    setState(() {
+      _formProgress = progress;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -65,6 +81,7 @@ class _SignUpFormState extends State<SignUpForm> {
     }
      
     return Form(
+      onChanged: _updateFormProgress,  // NEW
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -103,7 +120,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 return states.contains(MaterialState.disabled) ? null : Colors.blue;
               }),
             ),
-            onPressed: _showWelcomeScreen,
+            onPressed: _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
             child: Text('Sign up'),
           ),
         ],
